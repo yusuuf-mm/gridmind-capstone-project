@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>GridMind AI — Hankali na EV, Arewa</title>
+  <meta name="description" content="AI-powered optimization for electric vehicle charging networks across Nigeria and Africa."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Barlow+Condensed:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Mulish:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════════
+   VARIABLES — SAHEL-TECH PALETTE
+═══════════════════════════════════════════════ */
+:root {
+  --void:    #06040f;
+  --deep:    #0c0820;
+  --surface: #130f2e;
+  --card:    #18143a;
+  --gold:    #e8961e;
+  --amber:   #f7c540;
+  --terra:   #c45c2a;
+  --terra-l: #e07240;
+  --sky:     #28b4d0;
+  --sky-d:   #1a8aab;
+  --sand:    #eddec0;
+  --sand-d:  #c8b48a;
+  --muted:   #6b5f4e;
+  --border:  rgba(232,150,30,0.18);
+  --border-s:rgba(232,150,30,0.08);
+
+  --ff-title: 'Cinzel', serif;
+  --ff-head:  'Barlow Condensed', sans-serif;
+  --ff-mono:  'JetBrains Mono', monospace;
+  --ff-body:  'Mulish', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  background:var(--void);
+  color:var(--sand);
+  font-family:var(--ff-body);
+  line-height:1.65;
+  overflow-x:hidden;
+}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+
+/* ═══════════════════════════════════════════════
+   STAR-CANVAS BACKGROUND
+═══════════════════════════════════════════════ */
+#star-canvas{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;opacity:0.55;
+}
+
+/* Radial glow blobs */
+.glow{
+  position:fixed;border-radius:50%;
+  filter:blur(140px);pointer-events:none;z-index:0;
+}
+.glow-1{
+  width:700px;height:700px;
+  background:radial-gradient(circle,rgba(232,150,30,0.12) 0%,transparent 65%);
+  top:-300px;left:-200px;
+  animation:g1 20s ease-in-out infinite alternate;
+}
+.glow-2{
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(40,180,208,0.10) 0%,transparent 65%);
+  bottom:-200px;right:-150px;
+  animation:g2 25s ease-in-out infinite alternate;
+}
+.glow-3{
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(196,92,42,0.08) 0%,transparent 65%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:g3 18s ease-in-out infinite alternate;
+}
+@keyframes g1{to{transform:translate(100px,80px)}}
+@keyframes g2{to{transform:translate(-80px,-60px)}}
+@keyframes g3{to{transform:translate(60px,-40px) scale(1.2)}}
+
+/* Noise grain overlay */
+body::after{
+  content:'';position:fixed;inset:0;z-index:1;
+  pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+  opacity:0.025;
+}
+
+/* ═══════════════════════════════════════════════
+   HAUSA PATTERN DIVIDER SVG
+═══════════════════════════════════════════════ */
+.hausa-divider{
+  width:100%;height:32px;
+  position:relative;z-index:2;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.hausa-divider svg{width:100%;height:100%}
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.wrap{
+  position:relative;z-index:2;
+  max-width:1120px;margin:0 auto;padding:0 40px;
+}
+@media(max-width:640px){.wrap{padding:0 20px}}
+
+/* ═══════════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:18px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all 0.4s;
+}
+nav.sticky{
+  background:rgba(6,4,15,0.88);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+.nav-brand{
+  display:flex;align-items:center;gap:12px;
+}
+.nav-star{
+  width:32px;height:32px;flex-shrink:0;
+}
+.nav-wordmark{
+  font-family:var(--ff-title);
+  font-size:18px;font-weight:700;
+  letter-spacing:1px;
+  color:var(--amber);
+}
+.nav-wordmark em{
+  font-style:normal;
+  color:var(--sand);opacity:0.6;font-weight:400;
+}
+.nav-pill{
+  font-family:var(--ff-mono);font-size:10px;
+  border:1px solid var(--terra);
+  color:var(--terra-l);
+  padding:4px 14px;border-radius:2px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+@media(max-width:640px){nav{padding:16px 20px}.nav-pill{display:none}}
+
+/* ═══════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  padding:140px 0 60px;
+  position:relative;z-index:2;
+}
+
+/* Hausa kufic / decorative script watermark */
+.hero-watermark{
+  position:absolute;
+  right:-40px;top:50%;transform:translateY(-50%);
+  font-family:var(--ff-title);
+  font-size:clamp(200px,22vw,340px);
+  font-weight:900;
+  color:rgba(232,150,30,0.04);
+  letter-spacing:-10px;
+  line-height:1;
+  pointer-events:none;
+  user-select:none;
+  white-space:nowrap;
+}
+
+.hero-hausa-label{
+  font-family:var(--ff-mono);font-size:11px;
+  color:var(--gold);letter-spacing:3px;
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:28px;
+  animation:fadeUp 0.7s ease 0.1s both;
+}
+.hero-hausa-label::before{
+  content:'';flex:0 0 48px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+}
+.hero-hausa-label::after{
+  content:'';flex:0 0 48px;height:1px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+
+h1.hero-title{
+  font-family:var(--ff-title);
+  font-size:clamp(56px,9vw,110px);
+  font-weight:900;
+  line-height:0.92;
+  letter-spacing:-3px;
+  color:var(--sand);
+  animation:fadeUp 0.8s ease 0.25s both;
+}
+h1.hero-title .word-grid{color:var(--amber)}
+h1.hero-title .word-mind{
+  -webkit-text-stroke:2px var(--sand);
+  color:transparent;
+}
+h1.hero-title .word-ai{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--gold),var(--terra));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-hausa-words{
+  margin-top:20px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  animation:fadeUp 0.8s ease 0.4s both;
+}
+.hw{
+  font-family:var(--ff-mono);font-size:11px;
+  color:var(--muted);letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.hw span{color:var(--sand-d);font-size:10px}
+.hw-dot{width:4px;height:4px;border-radius:50%;background:var(--terra);opacity:0.5}
+
+.hero-sub{
+  margin-top:28px;
+  font-size:18px;font-weight:300;
+  color:var(--sand-d);
+  max-width:560px;
+  line-height:1.75;
+  animation:fadeUp 0.8s ease 0.55s both;
+}
+.hero-sub strong{color:var(--sand);font-weight:600}
+
+.hero-actions{
+  display:flex;gap:16px;margin-top:44px;flex-wrap:wrap;
+  animation:fadeUp 0.8s ease 0.7s both;
+}
+.btn-gold{
+  font-family:var(--ff-mono);font-size:12px;font-weight:700;
+  padding:15px 32px;
+  background:var(--gold);color:var(--void);
+  border:none;border-radius:2px;
+  letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;transition:all 0.25s;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+}
+.btn-gold:hover{background:var(--amber);transform:translateY(-3px);box-shadow:0 12px 32px rgba(232,150,30,0.35)}
+.btn-outline{
+  font-family:var(--ff-mono);font-size:12px;
+  padding:15px 32px;
+  background:transparent;color:var(--sand-d);
+  border:1px solid var(--border);
+  border-radius:2px;letter-spacing:1px;
+  text-transform:uppercase;cursor:pointer;transition:all 0.25s;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
+
+/* Minaret silhouette */
+.minaret-strip{
+  position:absolute;bottom:0;left:0;right:0;
+  height:120px;z-index:1;
+  pointer-events:none;opacity:0.22;
+}
+
+/* Hero status bar */
+.hero-statusbar{
+  display:flex;gap:36px;margin-top:64px;flex-wrap:wrap;
+  padding-top:32px;
+  border-top:1px solid var(--border-s);
+  animation:fadeUp 0.8s ease 0.85s both;
+}
+.hstat{display:flex;flex-direction:column;gap:4px}
+.hstat-val{
+  font-family:var(--ff-head);
+  font-size:36px;font-weight:800;
+  color:var(--amber);line-height:1;
+}
+.hstat-lbl{font-family:var(--ff-mono);font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.hstat-sub{font-size:11px;color:var(--terra-l)}
+
+/* ═══════════════════════════════════════════════
+   SECTION SCAFFOLD
+═══════════════════════════════════════════════ */
+section{position:relative;z-index:2}
+.sec-eyebrow{
+  font-family:var(--ff-mono);font-size:10px;
+  color:var(--terra-l);letter-spacing:3px;
+  text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:12px;
+}
+.sec-eyebrow::before{
+  content:'';width:24px;height:1px;
+  background:var(--terra);
+}
+.sec-title{
+  font-family:var(--ff-head);
+  font-size:clamp(36px,5vw,60px);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-1px;
+  color:var(--sand);
+}
+.sec-title .accent{color:var(--amber)}
+.sec-body{
+  font-size:16px;font-weight:300;
+  color:var(--sand-d);line-height:1.8;
+  max-width:580px;margin-top:16px;
+}
+
+/* ═══════════════════════════════════════════════
+   PROBLEM SECTION
+═══════════════════════════════════════════════ */
+#problem{padding:100px 0 80px}
+.problem-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;margin-top:60px;
+}
+.problem-copy p{
+  color:var(--sand-d);font-size:15px;
+  line-height:1.85;margin-bottom:16px;font-weight:300;
+}
+.problem-copy p strong{color:var(--sand);font-weight:600}
+
+.pstat-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.pstat{
+  background:var(--card);
+  padding:28px 24px;
+  border:1px solid var(--border-s);
+  position:relative;overflow:hidden;
+  transition:all 0.3s;cursor:default;
+}
+.pstat::before{
+  content:'';position:absolute;
+  top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(180deg,var(--gold),var(--terra));
+  transform:scaleY(0);transform-origin:top;
+  transition:transform 0.4s;
+}
+.pstat:hover::before{transform:scaleY(1)}
+.pstat:hover{border-color:var(--border)}
+.pstat-n{
+  font-family:var(--ff-head);
+  font-size:48px;font-weight:800;
+  color:var(--gold);line-height:1;
+}
+.pstat-n sup{font-size:22px}
+.pstat-t{font-family:var(--ff-mono);font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:1px;line-height:1.5}
+/* Decorative corner */
+.pstat::after{
+  content:'';position:absolute;
+  bottom:0;right:0;
+  width:0;height:0;
+  border-left:16px solid transparent;
+  border-bottom:16px solid rgba(232,150,30,0.12);
+}
+
+/* ═══════════════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════════════ */
+#how{padding:100px 0}
+.how-head{text-align:center;margin-bottom:80px}
+.how-head .sec-body{margin:16px auto 0}
+
+.pipeline{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  position:relative;gap:2px;
+}
+/* Connecting line */
+.pipeline::before{
+  content:'';position:absolute;
+  top:44px;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold) 20%,var(--terra) 80%,transparent);
+  z-index:0;
+}
+
+.pipe{
+  position:relative;z-index:1;
+  background:var(--card);
+  border:1px solid var(--border-s);
+  padding:32px 24px 28px;
+  text-align:center;
+  transition:all 0.3s;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
+}
+.pipe:hover{border-color:var(--border);transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,0.4)}
+.pipe-icon{
+  width:88px;height:88px;
+  border-radius:50%;
+  background:var(--deep);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  font-size:32px;
+  position:relative;
+  transition:all 0.3s;
+}
+.pipe:hover .pipe-icon{
+  border-color:var(--gold);
+  box-shadow:0 0 0 6px rgba(232,150,30,0.08),0 0 32px rgba(232,150,30,0.15);
+}
+.pipe-num{
+  position:absolute;top:-8px;right:-8px;
+  width:22px;height:22px;
+  background:var(--gold);color:var(--void);
+  font-family:var(--ff-mono);font-size:10px;font-weight:700;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.pipe-label{
+  font-family:var(--ff-mono);font-size:9px;
+  color:var(--terra-l);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.pipe-title{
+  font-family:var(--ff-head);font-size:18px;font-weight:700;
+  color:var(--sand);margin-bottom:10px;
+}
+.pipe-desc{font-size:13px;color:var(--sand-d);line-height:1.65;font-weight:300}
+
+/* ═══════════════════════════════════════════════
+   NETWORK VISUALIZATION
+═══════════════════════════════════════════════ */
+#network{padding:100px 0}
+.network-layout{
+  display:grid;grid-template-columns:1fr 1.1fr;
+  gap:60px;align-items:center;
+}
+.network-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:0;
+  padding:32px;
+  position:relative;overflow:hidden;
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+}
+.network-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--terra),var(--gold),var(--terra));
+  animation:shimmer 3s linear infinite;
+}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.nc-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border-s);
+}
+.nc-title{font-family:var(--ff-mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.nc-live{
+  font-family:var(--ff-mono);font-size:10px;color:var(--sky);
+  display:flex;align-items:center;gap:6px;
+}
+.nc-live::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--sky);box-shadow:0 0 8px var(--sky);
+  animation:blink 1.5s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.nc-map{
+  background:rgba(12,8,32,0.8);
+  border:1px solid var(--border-s);
+  border-radius:0;
+  padding:16px;margin-bottom:20px;
+}
+.nc-map svg{width:100%;height:auto;display:block}
+
+.nc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.nc-stat{
+  background:var(--deep);
+  padding:16px 12px;text-align:center;
+  border:1px solid var(--border-s);
+}
+.nc-stat-v{
+  font-family:var(--ff-head);font-size:28px;font-weight:800;
+  color:var(--amber);line-height:1;
+}
+.nc-stat-l{font-family:var(--ff-mono);font-size:9px;color:var(--muted);margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+
+/* ═══════════════════════════════════════════════
+   TECH CARDS
+═══════════════════════════════════════════════ */
+#tech{padding:100px 0}
+.tech-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:2px;margin-top:60px;
+}
+.tcard{
+  background:var(--card);
+  border:1px solid var(--border-s);
+  padding:36px;
+  position:relative;overflow:hidden;
+  transition:all 0.35s;
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,0 100%);
+}
+.tcard:hover{border-color:rgba(232,150,30,0.3);transform:translateY(-4px);box-shadow:0 24px 48px rgba(0,0,0,0.4)}
+/* Gold corner slash */
+.tcard::before{
+  content:'';position:absolute;
+  top:0;right:0;
+  width:0;height:0;
+  border-top:28px solid rgba(232,150,30,0.15);
+  border-left:28px solid transparent;
+  transition:border-top-color 0.3s;
+}
+.tcard:hover::before{border-top-color:rgba(232,150,30,0.3)}
+/* Bottom accent */
+.tcard::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--terra),var(--gold));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.4s;
+}
+.tcard:hover::after{transform:scaleX(1)}
+
+.tcard-icon{font-size:40px;margin-bottom:18px;display:block}
+.tcard-title{
+  font-family:var(--ff-head);font-size:22px;font-weight:700;
+  color:var(--amber);margin-bottom:10px;
+}
+.tcard-hausa{
+  font-family:var(--ff-mono);font-size:9px;
+  color:var(--terra-l);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:14px;
+  opacity:0.7;
+}
+.tcard-desc{font-size:14px;color:var(--sand-d);line-height:1.75;font-weight:300}
+.tcard-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{
+  font-family:var(--ff-mono);font-size:10px;
+  padding:4px 10px;
+  border:1px solid var(--border-s);
+  color:var(--sand-d);
+  background:rgba(232,150,30,0.05);
+  letter-spacing:0.5px;
+}
+
+/* ═══════════════════════════════════════════════
+   AWS ARCHITECTURE
+═══════════════════════════════════════════════ */
+#arch{padding:100px 0}
+.arch-wrap{
+  margin-top:60px;
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:48px;
+  position:relative;
+  overflow:hidden;
+  clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));
+}
+/* Hausa star watermark behind the diagram */
+.arch-watermark{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;opacity:0.03;font-size:300px;
+  user-select:none;
+}
+
+.arch-label-top{
+  text-align:center;
+  font-family:var(--ff-mono);font-size:10px;
+  color:var(--muted);letter-spacing:3px;
+  text-transform:uppercase;
+  margin-bottom:40px;
+  display:flex;align-items:center;justify-content:center;gap:20px;
+}
+.arch-label-top::before,.arch-label-top::after{
+  content:'';flex:1;max-width:100px;height:1px;
+  background:var(--border);
+}
+
+.arch-flow{
+  display:flex;align-items:center;
+  justify-content:center;
+  gap:0;flex-wrap:nowrap;
+}
+.arch-node{text-align:center;flex:1;max-width:180px}
+.arch-box{
+  display:inline-flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  width:120px;height:120px;
+  border:1px solid rgba(232,150,30,0.25);
+  background:var(--deep);
+  position:relative;
+  transition:all 0.3s;cursor:default;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+}
+.arch-box:hover{
+  border-color:var(--gold);
+  box-shadow:0 0 0 1px var(--gold),0 0 40px rgba(232,150,30,0.2);
+}
+.arch-box-icon{font-size:34px;margin-bottom:6px}
+.arch-box-name{font-family:var(--ff-mono);font-size:12px;font-weight:700;color:var(--gold)}
+.arch-box-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.arch-note{
+  font-family:var(--ff-mono);font-size:9px;color:var(--muted);
+  margin-top:12px;letter-spacing:0.5px;line-height:1.5;
+  text-transform:uppercase;
+}
+
+.arch-arrow-wrap{
+  display:flex;flex-direction:column;
+  align-items:center;gap:4px;
+  padding:0 8px;
+  flex:0 0 auto;
+}
+.arch-arrow{
+  width:48px;height:2px;
+  background:linear-gradient(90deg,var(--terra),var(--gold));
+  position:relative;
+}
+.arch-arrow::after{
+  content:'';position:absolute;
+  right:-1px;top:50%;transform:translateY(-50%);
+  width:0;height:0;
+  border-left:8px solid var(--gold);
+  border-top:5px solid transparent;
+  border-bottom:5px solid transparent;
+}
+/* Data packet animation */
+.arch-arrow .packet{
+  position:absolute;
+  top:50%;transform:translateY(-50%);
+  width:6px;height:6px;border-radius:50%;
+  background:var(--amber);
+  box-shadow:0 0 8px var(--amber);
+  animation:travel 2s linear infinite;
+}
+@keyframes travel{0%{left:0;opacity:0}20%{opacity:1}80%{opacity:1}100%{left:calc(100% - 6px);opacity:0}}
+
+.arch-tag{
+  font-family:var(--ff-mono);font-size:9px;
+  color:var(--terra-l);letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+/* ═══════════════════════════════════════════════
+   BUILDER
+═══════════════════════════════════════════════ */
+#builder{padding:100px 0}
+.builder-card{
+  display:grid;grid-template-columns:auto 1fr;
+  gap:48px;align-items:center;
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:48px;
+  position:relative;overflow:hidden;
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+}
+/* Gradient wash */
+.builder-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(196,92,42,0.06) 0%,transparent 50%,rgba(40,180,208,0.04) 100%);
+  pointer-events:none;
+}
+.builder-avatar{
+  width:140px;height:140px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(232,150,30,0.15),rgba(40,180,208,0.1));
+  border:2px solid rgba(232,150,30,0.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:64px;flex-shrink:0;
+  position:relative;z-index:1;
+}
+/* Orbiting ring */
+.builder-avatar::before{
+  content:'';position:absolute;inset:-10px;border-radius:50%;
+  border:1px dashed rgba(232,150,30,0.2);
+  animation:orbit 20s linear infinite;
+}
+@keyframes orbit{to{transform:rotate(360deg)}}
+
+.builder-info{position:relative;z-index:1}
+.builder-name{
+  font-family:var(--ff-title);
+  font-size:clamp(28px,4vw,42px);font-weight:700;
+  color:var(--sand);letter-spacing:-0.5px;
+  margin-bottom:6px;
+}
+.builder-role{
+  font-family:var(--ff-mono);font-size:12px;
+  color:var(--gold);letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:20px;
+}
+.builder-bio{
+  font-size:15px;font-weight:300;
+  color:var(--sand-d);line-height:1.8;
+  max-width:540px;
+}
+.builder-skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.bskill{
+  font-family:var(--ff-mono);font-size:10px;
+  padding:5px 14px;
+  border:1px solid var(--border-s);
+  color:var(--sand-d);letter-spacing:0.5px;
+  transition:all 0.2s;
+}
+.bskill:hover{border-color:var(--gold);color:var(--amber)}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+footer{
+  border-top:1px solid var(--border-s);
+  padding:48px 0;
+  position:relative;z-index:2;
+}
+.footer-inner{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;flex-wrap:wrap;gap:32px;
+}
+.footer-brand-name{
+  font-family:var(--ff-title);font-size:22px;font-weight:700;
+  color:var(--amber);letter-spacing:1px;
+}
+.footer-tagline{
+  font-family:var(--ff-mono);font-size:10px;
+  color:var(--muted);margin-top:6px;letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.footer-hausa{
+  font-family:var(--ff-mono);font-size:10px;
+  color:var(--terra-l);margin-top:8px;letter-spacing:1px;
+}
+.footer-meta{text-align:right}
+.footer-meta p{
+  font-family:var(--ff-mono);font-size:10px;
+  color:var(--muted);line-height:2;letter-spacing:0.5px;
+}
+.footer-meta p span{color:var(--gold)}
+
+/* ═══════════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════════ */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(28px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.reveal{
+  opacity:0;transform:translateY(28px);
+  transition:opacity 0.75s ease,transform 0.75s ease;
+}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media(max-width:960px){
+  .problem-layout{grid-template-columns:1fr;gap:48px}
+  .pipeline{grid-template-columns:repeat(2,1fr);gap:2px}
+  .pipeline::before{display:none}
+  .network-layout{grid-template-columns:1fr}
+  .tech-grid{grid-template-columns:1fr}
+  .arch-flow{flex-wrap:wrap;gap:16px}
+  .arch-arrow-wrap{transform:rotate(90deg)}
+  .builder-card{grid-template-columns:1fr;text-align:center;gap:32px}
+  .builder-avatar{margin:0 auto}
+  .builder-bio,.builder-skills{max-width:100%;justify-content:center}
+  .footer-meta{text-align:left}
+}
+@media(max-width:640px){
+  h1.hero-title{letter-spacing:-2px}
+  .hero-watermark{display:none}
+  .pstat-grid{grid-template-columns:1fr 1fr}
+  .arch-wrap{padding:28px 20px}
+  .builder-card{padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ STAR CANVAS ══ -->
+<canvas id="star-canvas"></canvas>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="glow glow-3"></div>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="nav">
+  <div class="nav-brand">
+    <!-- 8-pointed star logo mark -->
+    <svg class="nav-star" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 2L18.8 10.2L27 13L18.8 15.8L16 24L13.2 15.8L5 13L13.2 10.2Z" fill="#e8961e" opacity="0.9"/>
+      <path d="M16 8L17.4 12.6L22 14L17.4 15.4L16 20L14.6 15.4L10 14L14.6 12.6Z" fill="#f7c540" opacity="0.6"/>
+    </svg>
+    <div class="nav-wordmark">Grid<em>Mind</em> <span style="color:var(--gold)">AI</span></div>
+  </div>
+  <div class="nav-pill">⚡ Arewa · 2025</div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="wrap" style="position:relative">
+    <div class="hero-watermark">GM</div>
+    <div class="hero-hausa-label">Hankali · Wutar Lantarki · Ingantawa</div>
+    <h1 class="hero-title">
+      <span class="word-grid">Grid</span><span class="word-mind">Mind</span><br>
+      <span class="word-ai">AI</span>
+    </h1>
+    <div class="hero-hausa-words">
+      <div class="hw">Hankali <span>/ Intelligence</span></div>
+      <div class="hw-dot"></div>
+      <div class="hw">Cibiyar Sadarwa <span>/ Network Hub</span></div>
+      <div class="hw-dot"></div>
+      <div class="hw">Ingantawa <span>/ Optimization</span></div>
+    </div>
+    <p class="hero-sub">
+      <strong>AI-powered optimization</strong> for electric vehicle charging networks
+      across Nigeria and emerging African markets. From Kano to Lagos —
+      <strong>one intelligent grid</strong>.
+    </p>
+    <div class="hero-actions">
+      <a href="#how" class="btn-gold">Gano Hanyar / See How</a>
+      <a href="#arch" class="btn-outline">AWS Architecture</a>
+    </div>
+    <div class="hero-statusbar">
+      <div class="hstat">
+        <div class="hstat-val" data-target="312">0</div>
+        <div class="hstat-lbl">Stations Modelled</div>
+        <div class="hstat-sub">Across 6 Nigerian states</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-val" data-target="87" data-suffix="%">0%</div>
+        <div class="hstat-lbl">Peak Efficiency</div>
+        <div class="hstat-sub">AI-optimized routing</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-val" data-target="3" data-suffix="x">0x</div>
+        <div class="hstat-lbl">Wait Time Reduction</div>
+        <div class="hstat-sub">vs. uncoordinated networks</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-val" data-target="4" data-prefix="$" data-suffix="B">$0B</div>
+        <div class="hstat-lbl">Market Opportunity</div>
+        <div class="hstat-sub">African EV infra by 2035</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kano Minaret Silhouette -->
+  <div class="minaret-strip">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="
+        M0,120 L0,80 L20,80 L20,40 L22,40 L22,20 L24,18 L26,20 L26,40 L28,40 L28,80
+        L60,80 L60,50 L62,50 L62,30 L64,28 L66,30 L66,50 L68,50 L68,80
+        L100,80 L100,60 L104,60 L104,10 L106,6 L108,10 L108,60 L112,60 L112,80
+        L160,80 L160,55 L163,55 L163,25 L165,22 L167,25 L167,55 L170,55 L170,80
+        L200,80 L200,90 L240,90 L240,70 L243,70 L243,35 L245,32 L247,35 L247,70 L250,70 L250,90
+        L300,90 L300,65 L304,65 L304,15 L306,10 L308,15 L308,65 L312,65 L312,90
+        L370,90 L370,75 L372,75 L372,45 L374,42 L376,45 L376,75 L378,75 L378,90
+        L430,90 L430,80 L434,80 L434,30 L437,26 L440,30 L440,80 L444,80 L444,90
+        L520,90 L520,70 L523,70 L523,38 L525,35 L527,38 L527,70 L530,70 L530,90
+        L600,90 L600,80 L603,80 L603,42 L606,38 L609,42 L609,80 L612,80 L612,90
+        L680,90 L680,60 L683,60 L683,20 L686,16 L689,20 L689,60 L692,60 L692,90
+        L760,90 L760,75 L764,75 L764,40 L767,36 L770,40 L770,75 L774,75 L774,90
+        L840,90 L840,65 L843,65 L843,28 L846,24 L849,28 L849,65 L852,65 L852,90
+        L920,90 L920,80 L924,80 L924,35 L927,30 L930,35 L930,80 L934,80 L934,90
+        L1000,90 L1000,70 L1003,70 L1003,38 L1006,34 L1009,38 L1009,70 L1012,70 L1012,90
+        L1080,90 L1080,60 L1083,60 L1083,22 L1086,18 L1089,22 L1089,60 L1092,60 L1092,90
+        L1160,90 L1160,78 L1164,78 L1164,40 L1167,36 L1170,40 L1170,78 L1174,78 L1174,90
+        L1240,90 L1240,65 L1243,65 L1243,28 L1246,24 L1249,28 L1249,65 L1252,65 L1252,90
+        L1320,90 L1320,75 L1323,75 L1323,42 L1326,38 L1329,42 L1329,75 L1332,75 L1332,90
+        L1400,90 L1400,80 L1404,80 L1404,35 L1407,30 L1410,35 L1410,80 L1414,80 L1414,90
+        L1440,90 L1440,120 Z
+      " fill="#e8961e"/>
+    </svg>
+  </div>
+</section>
+
+<!-- Hausa Divider -->
+<div class="hausa-divider">
+  <svg viewBox="0 0 1440 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="chevron" x="0" y="0" width="48" height="32" patternUnits="userSpaceOnUse">
+        <polyline points="0,16 12,4 24,16 36,4 48,16" stroke="rgba(232,150,30,0.25)" stroke-width="1.5" fill="none"/>
+        <polyline points="0,28 12,16 24,28 36,16 48,28" stroke="rgba(196,92,42,0.15)" stroke-width="1" fill="none"/>
+      </pattern>
+    </defs>
+    <rect width="1440" height="32" fill="url(#chevron)"/>
+  </svg>
+</div>
+
+<!-- ══ PROBLEM ══ -->
+<section id="problem">
+  <div class="wrap">
+    <div class="problem-layout">
+      <div class="reveal">
+        <div class="sec-eyebrow">Matsala / The Challenge</div>
+        <h2 class="sec-title">Africa's EV moment<br>is <span class="accent">here.</span><br>The grid isn't.</h2>
+        <div class="sec-body" style="max-width:100%">
+          <p style="margin-top:0">Nigeria's electric vehicle market is growing fast — but the charging infrastructure is <strong>fragmented, reactive, and wasteful</strong>. Stations go idle in one district while queues build in another.</p>
+          <p>Without intelligent coordination, the promise of clean transport risks stalling before it reaches the streets of Kano, Abuja, or Lagos.</p>
+          <p><strong>GridMind AI is the optimization layer the continent needs.</strong></p>
+        </div>
+      </div>
+      <div class="pstat-grid reveal" style="transition-delay:0.15s">
+        <div class="pstat">
+          <div class="pstat-n">2.3<sup>M</sup></div>
+          <div class="pstat-t">EVs projected in<br>Nigeria by 2030</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-n">~40<sup>%</sup></div>
+          <div class="pstat-t">Average charger<br>idle time wasted daily</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-n">3<sup>x</sup></div>
+          <div class="pstat-t">Wait time reduction<br>with smart routing</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-n">$4<sup>B</sup></div>
+          <div class="pstat-t">African EV infra<br>market by 2035</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hausa Divider -->
+<div class="hausa-divider">
+  <svg viewBox="0 0 1440 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="chevron2" x="0" y="0" width="48" height="32" patternUnits="userSpaceOnUse">
+        <polyline points="0,16 12,28 24,16 36,28 48,16" stroke="rgba(232,150,30,0.2)" stroke-width="1.5" fill="none"/>
+        <polyline points="0,4 12,16 24,4 36,16 48,4" stroke="rgba(196,92,42,0.12)" stroke-width="1" fill="none"/>
+      </pattern>
+    </defs>
+    <rect width="1440" height="32" fill="url(#chevron2)"/>
+  </svg>
+</div>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section id="how">
+  <div class="wrap">
+    <div class="how-head reveal">
+      <div class="sec-eyebrow" style="justify-content:center">Tsarin Aiki / How It Works</div>
+      <h2 class="sec-title" style="text-align:center">Four layers.<br>One <span class="accent">intelligent</span> network.</h2>
+      <p class="sec-body" style="text-align:center;margin:16px auto 0">GridMind continuously ingests, learns, and acts — turning raw station data into optimised decisions, in real time, across the entire network.</p>
+    </div>
+    <div class="pipeline">
+      <div class="pipe reveal">
+        <div class="pipe-icon">📡<div class="pipe-num">1</div></div>
+        <div class="pipe-label">Tarawa / Collect</div>
+        <div class="pipe-title">Data Ingestion</div>
+        <p class="pipe-desc">Real-time telemetry from EV stations — usage rates, grid load, queue length, energy pricing — streamed via Kafka.</p>
+      </div>
+      <div class="pipe reveal" style="transition-delay:0.1s">
+        <div class="pipe-icon">🧠<div class="pipe-num">2</div></div>
+        <div class="pipe-label">Hankali / Think</div>
+        <div class="pipe-title">AI Prediction</div>
+        <p class="pipe-desc">ML models forecast demand surges, station faults, and optimal pricing windows hours before they happen.</p>
+      </div>
+      <div class="pipe reveal" style="transition-delay:0.2s">
+        <div class="pipe-icon">⚙️<div class="pipe-num">3</div></div>
+        <div class="pipe-label">Ingantawa / Optimise</div>
+        <div class="pipe-title">Optimization Engine</div>
+        <p class="pipe-desc">Operations research algorithms route vehicles, balance grid loads, and schedule maintenance automatically.</p>
+      </div>
+      <div class="pipe reveal" style="transition-delay:0.3s">
+        <div class="pipe-icon">📊<div class="pipe-num">4</div></div>
+        <div class="pipe-label">Gani / See</div>
+        <div class="pipe-title">Operator Dashboard</div>
+        <p class="pipe-desc">Fleet managers and station operators see live maps, AI alerts, and routing recommendations in one panel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NETWORK VIZ ══ -->
+<section id="network">
+  <div class="wrap">
+    <div class="network-layout">
+      <div class="reveal">
+        <div class="sec-eyebrow">Cibiyar Sadarwa / Live Network</div>
+        <h2 class="sec-title">The grid,<br><span class="accent">alive</span> with data.</h2>
+        <p class="sec-body">Every charging station becomes a node in a living, breathing intelligence network. GridMind sees the whole board — and optimises every move.</p>
+        <div style="margin-top:32px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="width:10px;height:10px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;flex-shrink:0"></span>
+            <span style="font-family:var(--ff-mono);font-size:12px;color:var(--sand-d)">Station online · optimised</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;box-shadow:0 0 8px #f59e0b;flex-shrink:0"></span>
+            <span style="font-family:var(--ff-mono);font-size:12px;color:var(--sand-d)">Station active · rerouting</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="width:10px;height:10px;border-radius:50%;background:var(--sky);box-shadow:0 0 8px var(--sky);flex-shrink:0"></span>
+            <span style="font-family:var(--ff-mono);font-size:12px;color:var(--sand-d)">AI core · processing</span>
+          </div>
+        </div>
+      </div>
+      <div class="network-card reveal" style="transition-delay:0.15s">
+        <div class="nc-topbar">
+          <div class="nc-title">Lagos Metro · GridMind Node Map</div>
+          <div class="nc-live">AI Active</div>
+        </div>
+        <div class="nc-map">
+          <svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grd" width="24" height="24" patternUnits="userSpaceOnUse">
+                <path d="M24 0L0 0 0 24" fill="none" stroke="rgba(232,150,30,0.07)" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="360" height="230" fill="url(#grd)"/>
+            <!-- Connections -->
+            <line x1="180" y1="115" x2="80" y2="55" stroke="rgba(40,180,208,0.5)" stroke-width="1.5" stroke-dasharray="5,3"><animate attributeName="stroke-dashoffset" from="0" to="-16" dur="1.6s" repeatCount="indefinite"/></line>
+            <line x1="180" y1="115" x2="280" y2="55" stroke="rgba(40,180,208,0.5)" stroke-width="1.5" stroke-dasharray="5,3"><animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2s" repeatCount="indefinite"/></line>
+            <line x1="180" y1="115" x2="55" y2="170" stroke="rgba(52,211,153,0.5)" stroke-width="1.5" stroke-dasharray="5,3"><animate attributeName="stroke-dashoffset" from="0" to="-16" dur="2.2s" repeatCount="indefinite"/></line>
+            <line x1="180" y1="115" x2="295" y2="165" stroke="rgba(52,211,153,0.5)" stroke-width="1.5" stroke-dasharray="5,3"><animate attributeName="stroke-dashoffset" from="0" to="-16" dur="1.4s" repeatCount="indefinite"/></line>
+            <line x1="180" y1="115" x2="180" y2="200" stroke="rgba(232,150,30,0.5)" stroke-width="1.5" stroke-dasharray="5,3"><animate attributeName="stroke-dashoffset" from="0" to="-16" dur="1.9s" repeatCount="indefinite"/></line>
+            <line x1="80" y1="55" x2="280" y2="55" stroke="rgba(232,150,30,0.15)" stroke-width="0.8"/>
+            <line x1="55" y1="170" x2="295" y2="165" stroke="rgba(232,150,30,0.1)" stroke-width="0.8"/>
+            <!-- AI Core -->
+            <circle cx="180" cy="115" r="20" fill="rgba(40,180,208,0.1)" stroke="#28b4d0" stroke-width="2">
+              <animate attributeName="r" values="20;23;20" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="180" cy="115" r="32" fill="none" stroke="rgba(40,180,208,0.12)" stroke-width="1.5">
+              <animate attributeName="r" values="32;38;32" dur="3s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.5;0;0.5" dur="3s" repeatCount="indefinite"/>
+            </circle>
+            <text x="180" y="119" text-anchor="middle" fill="#28b4d0" font-family="monospace" font-size="11" font-weight="bold">AI</text>
+            <!-- Charger nodes -->
+            <g><circle cx="80" cy="55" r="11" fill="rgba(52,211,153,0.12)" stroke="#34d399" stroke-width="1.5"/>
+              <text x="80" y="59" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="10">⚡</text>
+              <text x="80" y="40" text-anchor="middle" fill="rgba(200,180,138,0.6)" font-family="monospace" font-size="8">VI</text></g>
+            <g><circle cx="280" cy="55" r="11" fill="rgba(52,211,153,0.12)" stroke="#34d399" stroke-width="1.5"/>
+              <text x="280" y="59" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="10">⚡</text>
+              <text x="280" y="40" text-anchor="middle" fill="rgba(200,180,138,0.6)" font-family="monospace" font-size="8">LEKKI</text></g>
+            <g><circle cx="55" cy="170" r="11" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.5">
+                <animate attributeName="stroke" values="#f59e0b;#34d399;#f59e0b" dur="4s" repeatCount="indefinite"/></circle>
+              <text x="55" y="174" text-anchor="middle" fill="#f59e0b" font-family="monospace" font-size="10">⚡</text>
+              <text x="55" y="188" text-anchor="middle" fill="rgba(200,180,138,0.6)" font-family="monospace" font-size="8">SURULERE</text></g>
+            <g><circle cx="295" cy="165" r="11" fill="rgba(52,211,153,0.12)" stroke="#34d399" stroke-width="1.5"/>
+              <text x="295" y="169" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="10">⚡</text>
+              <text x="295" y="182" text-anchor="middle" fill="rgba(200,180,138,0.6)" font-family="monospace" font-size="8">IKEJA</text></g>
+            <g><circle cx="180" cy="200" r="11" fill="rgba(52,211,153,0.12)" stroke="#34d399" stroke-width="1.5"/>
+              <text x="180" y="204" text-anchor="middle" fill="#34d399" font-family="monospace" font-size="10">⚡</text>
+              <text x="230" y="210" text-anchor="middle" fill="rgba(200,180,138,0.6)" font-family="monospace" font-size="8">IKORODU</text></g>
+            <!-- Data packets -->
+            <circle r="3" fill="#f7c540" opacity="0.9"><animateMotion dur="2s" repeatCount="indefinite" path="M180,115 L80,55"/><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/></circle>
+            <circle r="3" fill="#34d399" opacity="0.9"><animateMotion dur="2.5s" repeatCount="indefinite" path="M180,115 L295,165"/><animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite"/></circle>
+            <circle r="3" fill="#28b4d0" opacity="0.9"><animateMotion dur="1.9s" repeatCount="indefinite" path="M180,115 L280,55"/><animate attributeName="opacity" values="0;1;0" dur="1.9s" repeatCount="indefinite"/></circle>
+          </svg>
+        </div>
+        <div class="nc-stats">
+          <div class="nc-stat"><div class="nc-stat-v">5</div><div class="nc-stat-l">Stations</div></div>
+          <div class="nc-stat"><div class="nc-stat-v" style="color:#34d399">87%</div><div class="nc-stat-l">Efficiency</div></div>
+          <div class="nc-stat"><div class="nc-stat-v" style="color:var(--amber)">+32%</div><div class="nc-stat-l">Optimised</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hausa Divider -->
+<div class="hausa-divider">
+  <svg viewBox="0 0 1440 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="chevron3" x="0" y="0" width="48" height="32" patternUnits="userSpaceOnUse">
+        <polyline points="0,16 12,4 24,16 36,4 48,16" stroke="rgba(196,92,42,0.2)" stroke-width="1.5" fill="none"/>
+        <polyline points="0,28 12,16 24,28 36,16 48,28" stroke="rgba(232,150,30,0.12)" stroke-width="1" fill="none"/>
+      </pattern>
+    </defs>
+    <rect width="1440" height="32" fill="url(#chevron3)"/>
+  </svg>
+</div>
+
+<!-- ══ TECH STACK ══ -->
+<section id="tech">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="sec-eyebrow">Fasahar Aiki / Technology Stack</div>
+      <h2 class="sec-title">Built on<br><span class="accent">serious</span> engineering.</h2>
+      <p class="sec-body">Each layer of GridMind is designed for scale, resilience, and the realities of African connectivity and infrastructure.</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tcard reveal">
+        <span class="tcard-icon">🤖</span>
+        <div class="tcard-hausa">Hankali Artificial / AI</div>
+        <div class="tcard-title">AI & Machine Learning</div>
+        <p class="tcard-desc">Demand forecasting, anomaly detection, and reinforcement learning for dynamic charging-price optimization across the entire network — trained on Nigerian grid data.</p>
+        <div class="tcard-chips">
+          <span class="chip">Python</span><span class="chip">TensorFlow</span>
+          <span class="chip">XGBoost</span><span class="chip">Scikit-learn</span>
+        </div>
+      </div>
+      <div class="tcard reveal" style="transition-delay:0.1s">
+        <span class="tcard-icon">🔬</span>
+        <div class="tcard-hausa">Ingantawa / Optimisation</div>
+        <div class="tcard-title">Optimization Models</div>
+        <p class="tcard-desc">Linear programming and vehicle routing algorithms that minimize wait times and maximize network throughput — even under load-shedding and grid instability conditions.</p>
+        <div class="tcard-chips">
+          <span class="chip">OR-Tools</span><span class="chip">PuLP</span>
+          <span class="chip">MILP</span><span class="chip">VRP Solver</span>
+        </div>
+      </div>
+      <div class="tcard reveal" style="transition-delay:0.2s">
+        <span class="tcard-icon">🗄️</span>
+        <div class="tcard-hausa">Bayanai / Data</div>
+        <div class="tcard-title">Data Engineering</div>
+        <p class="tcard-desc">High-throughput streaming pipelines ingest telemetry from hundreds of stations. Data is warehoused, transformed, and made available for real-time analytics and model retraining.</p>
+        <div class="tcard-chips">
+          <span class="chip">Apache Kafka</span><span class="chip">dbt</span>
+          <span class="chip">PostgreSQL</span><span class="chip">AWS S3</span>
+        </div>
+      </div>
+      <div class="tcard reveal" style="transition-delay:0.3s">
+        <span class="tcard-icon">☁️</span>
+        <div class="tcard-hausa">Gajimare / Cloud</div>
+        <div class="tcard-title">Cloud Infrastructure</div>
+        <p class="tcard-desc">Serverless and containerized workloads on AWS — built for cost efficiency, auto-scaling, and high availability across regions with varying bandwidth and power reliability.</p>
+        <div class="tcard-chips">
+          <span class="chip">AWS Lambda</span><span class="chip">ECS Fargate</span>
+          <span class="chip">CloudFront</span><span class="chip">Terraform</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hausa Divider -->
+<div class="hausa-divider">
+  <svg viewBox="0 0 1440 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1440" height="32" fill="url(#chevron2)"/>
+  </svg>
+</div>
+
+<!-- ══ AWS ARCHITECTURE ══ -->
+<section id="arch">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center">
+      <div class="sec-eyebrow" style="justify-content:center">Ginin Girgije / Cloud Architecture</div>
+      <h2 class="sec-title" style="text-align:center">Deployed like a<br><span class="accent">startup</span>. On AWS.</h2>
+      <p class="sec-body" style="text-align:center;margin:16px auto 0;max-width:560px">The same infrastructure used by unicorn startups worldwide. This landing page — and the GridMind platform — runs on S3 + CloudFront. Globally distributed. Zero servers. Enterprise grade.</p>
+    </div>
+    <div class="arch-wrap reveal">
+      <div class="arch-watermark">✦</div>
+      <div class="arch-label-top">AWS Static Deployment · GridMind AI · Production Architecture</div>
+      <div class="arch-flow">
+        <div class="arch-node">
+          <div class="arch-box">
+            <span class="arch-box-icon">🌍</span>
+            <div class="arch-box-name">User</div>
+            <div class="arch-box-sub">Browser</div>
+          </div>
+          <div class="arch-note">Anywhere on Earth<br>Nigeria · Africa · Global</div>
+        </div>
+        <div class="arch-arrow-wrap">
+          <div class="arch-arrow"><div class="packet"></div></div>
+          <div class="arch-tag">HTTPS Request</div>
+        </div>
+        <div class="arch-node">
+          <div class="arch-box">
+            <span class="arch-box-icon">🌐</span>
+            <div class="arch-box-name">CloudFront</div>
+            <div class="arch-box-sub">CDN · Edge</div>
+          </div>
+          <div class="arch-note">450+ Edge Locations<br>Global Low Latency</div>
+        </div>
+        <div class="arch-arrow-wrap">
+          <div class="arch-arrow" style="animation-delay:0.5s"><div class="packet" style="animation-delay:0.5s"></div></div>
+          <div class="arch-tag">Cache Miss → Origin</div>
+        </div>
+        <div class="arch-node">
+          <div class="arch-box">
+            <span class="arch-box-icon">🪣</span>
+            <div class="arch-box-name">S3 Bucket</div>
+            <div class="arch-box-sub">Static Host</div>
+          </div>
+          <div class="arch-note">gridmind-ai-site<br>AWS us-east-1</div>
+        </div>
+        <div class="arch-arrow-wrap">
+          <div class="arch-arrow" style="animation-delay:1s"><div class="packet" style="animation-delay:1s"></div></div>
+          <div class="arch-tag">Serve File</div>
+        </div>
+        <div class="arch-node">
+          <div class="arch-box">
+            <span class="arch-box-icon">📄</span>
+            <div class="arch-box-name">index.html</div>
+            <div class="arch-box-sub">Your Site</div>
+          </div>
+          <div class="arch-note">Rendered in &lt;50ms<br>Globally cached</div>
+        </div>
+      </div>
+      <!-- Bottom cost note -->
+      <div style="text-align:center;margin-top:36px;padding-top:28px;border-top:1px solid var(--border-s)">
+        <span style="font-family:var(--ff-mono);font-size:10px;color:var(--muted);letter-spacing:1.5px">
+          ESTIMATED MONTHLY COST: <span style="color:var(--gold)">$0.50 – $2.00</span> &nbsp;·&nbsp;
+          AWS FREE TIER ELIGIBLE &nbsp;·&nbsp; 
+          <span style="color:var(--terra-l)">SAME STACK AS PRODUCTION STARTUPS</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BUILDER ══ -->
+<section id="builder">
+  <div class="wrap">
+    <div class="builder-card reveal">
+      <div class="builder-avatar">👨🏾‍💻</div>
+      <div class="builder-info">
+        <div class="sec-eyebrow">Mai Gini / The Builder</div>
+        <div class="builder-name">Yusuf Musa</div>
+        <div class="builder-role">Cloud · Data · AI Engineer · Arewa, Nigeria</div>
+        <p class="builder-bio">Building at the intersection of cloud infrastructure, machine learning, and real-world African impact. GridMind AI demonstrates how modern engineering can solve the infrastructure challenges our continent faces — one optimised charging station at a time.</p>
+        <div class="builder-skills">
+          <span class="bskill">☁️ AWS Cloud</span>
+          <span class="bskill">🧠 Machine Learning</span>
+          <span class="bskill">🗄️ Data Engineering</span>
+          <span class="bskill">⚙️ Optimization</span>
+          <span class="bskill">🐍 Python</span>
+          <span class="bskill">🏗️ Cloud Architecture</span>
+          <span class="bskill">⚡ EV Systems</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hausa Divider -->
+<div class="hausa-divider" style="margin-top:80px">
+  <svg viewBox="0 0 1440 32" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1440" height="32" fill="url(#chevron)"/>
+  </svg>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand-name">GridMind AI</div>
+        <div class="footer-tagline">EV Network Intelligence · Nigeria & Africa</div>
+        <div class="footer-hausa">Hankali · Wutar Lantarki · Ingantawa</div>
+      </div>
+      <div class="footer-meta">
+        <p>Deployed on <span>AWS S3 + CloudFront</span></p>
+        <p>Built by <span>Yusuf Musa</span> · Cloud & AI Engineer</p>
+        <p>Arewa, Nigeria · <span>2025</span></p>
+        <p style="margin-top:8px;opacity:0.4">© 2025 GridMind AI. Concept Platform.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ SCRIPTS ══ -->
+<script>
+/* ── Hausa 8-Pointed Star Canvas ─────────────────── */
+const canvas = document.getElementById('star-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize(){
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+/* Draw one 8-pointed star */
+function drawStar8(x, y, R, r, rot=0){
+  ctx.beginPath();
+  for(let i=0;i<16;i++){
+    const angle = (i*Math.PI/8) + rot - Math.PI/2;
+    const radius = i%2===0 ? R : r;
+    const px = x + Math.cos(angle)*radius;
+    const py = y + Math.sin(angle)*radius;
+    i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+  }
+  ctx.closePath();
+}
+
+/* Particles (energy pulses on grid) */
+const particles = [];
+for(let i=0;i<40;i++){
+  particles.push({
+    x: Math.random()*2000, y: Math.random()*1200,
+    vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4,
+    r: Math.random()*1.2+0.3,
+    alpha: Math.random(),
+    color: Math.random()>0.6 ? '#e8961e' : Math.random()>0.5 ? '#f7c540' : '#28b4d0'
+  });
+}
+
+let t=0;
+function drawFrame(){
+  ctx.clearRect(0,0,W,H);
+  t += 0.004;
+
+  const CELL = 90;
+  const cols = Math.ceil(W/CELL)+2;
+  const rows = Math.ceil(H/CELL)+2;
+
+  for(let r=0;r<rows;r++){
+    for(let c=0;c<cols;c++){
+      const cx = (c-0.5)*CELL;
+      const cy = (r-0.5)*CELL;
+      const dist = Math.hypot(cx - W/2, cy - H/2);
+      const pulse = Math.sin(t - dist*0.005)*0.5+0.5;
+
+      /* Outer star outline */
+      drawStar8(cx, cy, 14, 7, t*0.15);
+      ctx.strokeStyle = `rgba(232,150,30,${0.06 + pulse*0.05})`;
+      ctx.lineWidth = 0.6;
+      ctx.stroke();
+
+      /* Inner dot */
+      ctx.beginPath();
+      ctx.arc(cx, cy, 1.2, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(247,197,64,${0.12 + pulse*0.08})`;
+      ctx.fill();
+
+      /* Grid lines */
+      if(c<cols-1){
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx+CELL, cy);
+        ctx.strokeStyle = `rgba(232,150,30,${0.04+pulse*0.03})`;
+        ctx.lineWidth=0.4;ctx.stroke();
+      }
+      if(r<rows-1){
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx, cy+CELL);
+        ctx.strokeStyle = `rgba(232,150,30,${0.04+pulse*0.03})`;
+        ctx.lineWidth=0.4;ctx.stroke();
+      }
+    }
+  }
+
+  /* Energy particles */
+  particles.forEach(p=>{
+    p.x += p.vx; p.y += p.vy;
+    p.alpha += (Math.random()-0.5)*0.04;
+    p.alpha = Math.max(0.05, Math.min(0.9, p.alpha));
+    if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+    if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha*0.7;
+    ctx.fill();
+  });
+  ctx.globalAlpha=1;
+
+  requestAnimationFrame(drawFrame);
+}
+drawFrame();
+
+/* ── Navbar Sticky ─────────────────────────────── */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('sticky', window.scrollY > 50);
+});
+
+/* ── Scroll Reveal ─────────────────────────────── */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+/* ── Hero Counter Animation ────────────────────── */
+function animCount(el, target, prefix='', suffix='', duration=1600){
+  const start = performance.now();
+  function step(now){
+    const pct = Math.min((now-start)/duration,1);
+    const ease = 1-Math.pow(1-pct,3);
+    const val = Math.round(target*ease);
+    el.textContent = prefix + val + suffix;
+    if(pct<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const heroObs = new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting){
+    document.querySelectorAll('.hstat-val').forEach(el=>{
+      const t = parseInt(el.dataset.target)||0;
+      const p = el.dataset.prefix||'';
+      const s = el.dataset.suffix||'';
+      animCount(el, t, p, s);
+    });
+    heroObs.disconnect();
+  }
+},{threshold:0.4});
+heroObs.observe(document.getElementById('hero'));
+</script>
+</body>
+</html>
